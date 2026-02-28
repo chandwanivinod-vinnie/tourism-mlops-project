@@ -58,7 +58,7 @@ cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
 candidates = {
     'RandomForest': {
-        'estimator': RandomForestClassifier(random_state=42, n_jobs=-1),
+        'estimator': RandomForestClassifier(random_state=42, n_jobs=1),
         'params': {
             'classifier__n_estimators': [200, 300, 500],
             'classifier__max_depth': [None, 8, 12, 16],
@@ -83,7 +83,7 @@ candidates = {
 results = {}
 for name, cfg in candidates.items():
     pipe = Pipeline([('preprocessor', pre), ('classifier', cfg['estimator'])])
-    search = RandomizedSearchCV(pipe, cfg['params'], n_iter=cfg['n_iter'], scoring='roc_auc', cv=cv, n_jobs=-1, random_state=42)
+    search = RandomizedSearchCV(pipe, cfg['params'], n_iter=cfg['n_iter'], scoring='roc_auc', cv=cv, n_jobs=1, random_state=42)
     search.fit(X_train, y_train)
     best = search.best_estimator_
     pred = best.predict(X_test)

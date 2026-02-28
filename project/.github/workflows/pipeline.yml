@@ -4,10 +4,17 @@ name: Tourism MLOps Pipeline
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: tourism-mlops-main
   cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.10"
 
 jobs:
   register-dataset:
@@ -16,7 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
       - name: Register raw dataset in HF
@@ -32,7 +40,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
       - name: Preprocess and upload train/test splits
@@ -48,17 +57,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
-      - name: Train, tune, evaluate, register model
+      - name: Train and register model
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
           HF_MODEL_REPO: ${{ secrets.HF_MODEL_REPO }}
-        run: |
-          python project/src/train.py
-          python project/src/evaluate.py
+        run: python project/src/train.py
+      - name: Evaluate model outputs
+        run: python project/src/evaluate.py
+      - name: Upload experiment artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-artifacts
+          path: |
+            project/experiments/*.json
+            project/models/inference_schema.json
+          if-no-files-found: warn
 
   deploy-space:
     needs: train-evaluate-register-model
@@ -67,7 +85,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
       - name: Push deployment files to HF Space
