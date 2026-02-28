@@ -1,0 +1,42 @@
+{
+  "selected_model": "GradientBoosting",
+  "selection_metric": "test_f1",
+  "selection_value": 0.8571428571428571,
+  "timestamp_utc": "2026-02-28T14:07:39.578385",
+  "train_shape": [
+    57,
+    18
+  ],
+  "test_shape": [
+    15,
+    18
+  ],
+  "numeric_features": [
+    "Age",
+    "CityTier",
+    "DurationOfPitch",
+    "NumberOfPersonVisiting",
+    "NumberOfFollowups",
+    "PreferredPropertyStar",
+    "NumberOfTrips",
+    "Passport",
+    "PitchSatisfactionScore",
+    "OwnCar",
+    "NumberOfChildrenVisiting",
+    "MonthlyIncome"
+  ],
+  "categorical_features": [
+    "TypeofContact",
+    "Occupation",
+    "Gender",
+    "ProductPitched",
+    "MaritalStatus",
+    "Designation"
+  ],
+  "best_params": {
+    "model__subsample": 0.7,
+    "model__n_estimators": 300,
+    "model__max_depth": 2,
+    "model__learning_rate": 0.05
+  }
+}
