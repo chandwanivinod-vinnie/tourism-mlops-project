@@ -1,0 +1,50 @@
+{
+  "timestamp_utc": "2026-02-28T17:37:41.602304+00:00",
+  "algorithm": "RandomForestClassifier",
+  "tuning_method": "RandomizedSearchCV",
+  "search_space": {
+    "classifier__n_estimators": [
+      200,
+      300,
+      500
+    ],
+    "classifier__max_depth": [
+      null,
+      8,
+      12,
+      16
+    ],
+    "classifier__min_samples_split": [
+      2,
+      5,
+      10
+    ],
+    "classifier__min_samples_leaf": [
+      1,
+      2,
+      4
+    ],
+    "classifier__max_features": [
+      "sqrt",
+      "log2",
+      null
+    ]
+  },
+  "best_params": {
+    "classifier__n_estimators": 500,
+    "classifier__min_samples_split": 2,
+    "classifier__min_samples_leaf": 1,
+    "classifier__max_features": "sqrt",
+    "classifier__max_depth": 12
+  },
+  "best_cv_score_roc_auc": 0.9499827190289345,
+  "test_metrics": {
+    "accuracy": 0.887409200968523,
+    "precision": 0.9125,
+    "recall": 0.4591194968553459,
+    "f1": 0.6108786610878661,
+    "roc_auc": 0.9572572204463807
+  },
+  "train_rows": 3302,
+  "test_rows": 826
+}

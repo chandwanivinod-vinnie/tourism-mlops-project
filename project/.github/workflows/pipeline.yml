@@ -1,0 +1,36 @@
+
+name: Tourism MLOps Pipeline
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  train-and-register:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -r project/requirements-ci.txt
+      - name: Register dataset
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
+        run: python project/src/register_data.py
+      - name: Preprocess dataset
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
+        run: python project/src/preprocess.py
+      - name: Train and register model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
+          HF_MODEL_REPO: ${{ secrets.HF_MODEL_REPO }}
+        run: python project/src/train.py
+      - name: Evaluate model
+        run: python project/src/evaluate.py
+
