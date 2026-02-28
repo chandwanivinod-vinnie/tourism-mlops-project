@@ -12,7 +12,7 @@ st.set_page_config(page_title="Tourism Package Predictor", layout="wide")
 st.title("Tourism Wellness Package Prediction")
 st.write("Provide customer details to estimate purchase probability.")
 
-HF_MODEL_REPO = os.getenv("HF_MODEL_REPO", "")
+HF_MODEL_REPO = os.getenv("HF_MODEL_REPO", "vinnie16/tourism-best-model")
 HF_TOKEN = os.getenv("HF_TOKEN", None)
 
 @st.cache_resource

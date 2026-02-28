@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy app source
 COPY app.py /app/app.py
 
-# Expose Streamlit port
-EXPOSE 8501
+# Hugging Face Docker Spaces route traffic through PORT (default 7860)
+EXPOSE 7860
 
-# Run Streamlit service
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run Streamlit service on HF-compatible port
+CMD ["sh", "-c", "streamlit run app.py --server.port ${PORT:-7860} --server.address 0.0.0.0"]
