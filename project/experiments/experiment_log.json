@@ -1,49 +1,41 @@
 {
-  "timestamp_utc": "2026-02-28T18:51:03.093896+00:00",
-  "algorithm": "RandomForestClassifier",
-  "tuning_method": "RandomizedSearchCV",
-  "search_space": {
-    "classifier__n_estimators": [
-      200,
-      300,
-      500
-    ],
-    "classifier__max_depth": [
-      null,
-      8,
-      12,
-      16
-    ],
-    "classifier__min_samples_split": [
-      2,
-      5,
-      10
-    ],
-    "classifier__min_samples_leaf": [
-      1,
-      2,
-      4
-    ],
-    "classifier__max_features": [
-      "sqrt",
-      "log2",
-      null
-    ]
-  },
-  "best_params": {
-    "classifier__n_estimators": 500,
-    "classifier__min_samples_split": 2,
-    "classifier__min_samples_leaf": 1,
-    "classifier__max_features": "sqrt",
-    "classifier__max_depth": 12
-  },
-  "best_cv_score_roc_auc": 0.9499827190289345,
-  "test_metrics": {
-    "accuracy": 0.887409200968523,
-    "precision": 0.9125,
-    "recall": 0.4591194968553459,
-    "f1": 0.6108786610878661,
-    "roc_auc": 0.9572572204463807
+  "timestamp_utc": "2026-02-28T19:01:40.274909+00:00",
+  "selection_metric": "roc_auc",
+  "selected_model": "RandomForest",
+  "all_model_results": {
+    "RandomForest": {
+      "best_params": {
+        "classifier__n_estimators": 500,
+        "classifier__min_samples_split": 2,
+        "classifier__min_samples_leaf": 1,
+        "classifier__max_features": "sqrt",
+        "classifier__max_depth": 12
+      },
+      "best_cv_score_roc_auc": 0.9499827190289345,
+      "test_metrics": {
+        "accuracy": 0.887409200968523,
+        "precision": 0.9125,
+        "recall": 0.4591194968553459,
+        "f1": 0.6108786610878661,
+        "roc_auc": 0.9572572204463807
+      }
+    },
+    "GradientBoosting": {
+      "best_params": {
+        "classifier__subsample": 0.85,
+        "classifier__n_estimators": 150,
+        "classifier__max_depth": 4,
+        "classifier__learning_rate": 0.05
+      },
+      "best_cv_score_roc_auc": 0.8987196244939687,
+      "test_metrics": {
+        "accuracy": 0.8837772397094431,
+        "precision": 0.8387096774193549,
+        "recall": 0.49056603773584906,
+        "f1": 0.6190476190476191,
+        "roc_auc": 0.9083948591741864
+      }
+    }
   },
   "train_rows": 3302,
   "test_rows": 826

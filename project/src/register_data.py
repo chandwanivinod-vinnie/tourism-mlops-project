@@ -23,7 +23,8 @@ hf_repo = os.getenv('HF_DATASET_REPO', '')
 if hf_token and hf_repo:
     api = HfApi(token=hf_token)
     api.create_repo(repo_id=hf_repo, repo_type='dataset', exist_ok=True, private=False)
-    Dataset.from_pandas(df, preserve_index=False).push_to_hub(hf_repo, token=hf_token)
+    _ = Dataset.from_pandas(df, preserve_index=False)
+    api.upload_file(path_or_fileobj=str(raw_path), path_in_repo='tourism.csv', repo_id=hf_repo, repo_type='dataset', token=hf_token)
     print(f'Registered dataset: {hf_repo}')
 else:
     print('HF credentials missing; dataset upload skipped.')

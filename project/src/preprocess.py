@@ -20,7 +20,7 @@ target = 'ProdTaken'
 df = None
 if hf_repo:
     try:
-        df = load_dataset(hf_repo, split='train').to_pandas()
+        df = load_dataset('csv', data_files={'train': f'hf://datasets/{hf_repo}/tourism.csv'}, split='train').to_pandas()
     except Exception:
         pass
 if df is None:
@@ -42,6 +42,8 @@ for c in df.columns:
 df = df.drop_duplicates().drop(columns=[x for x in ['Unnamed: 0', 'CustomerID'] if x in df.columns], errors='ignore')
 if {'NumberOfPersonVisiting', 'NumberOfChildrenVisiting'}.issubset(df.columns):
     df['FamilySize'] = df['NumberOfPersonVisiting'] + df['NumberOfChildrenVisiting']
+if {'MonthlyIncome', 'NumberOfTrips'}.issubset(df.columns):
+    df['IncomePerTrip'] = df['MonthlyIncome'] / (df['NumberOfTrips'].replace(0, 1))
 
 X = df.drop(columns=[target])
 y = df[target].astype(int)

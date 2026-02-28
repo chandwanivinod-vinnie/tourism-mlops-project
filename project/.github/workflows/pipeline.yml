@@ -5,8 +5,9 @@ on:
   push:
     branches: ["main"]
 
-permissions:
-  contents: read
+concurrency:
+  group: tourism-mlops-main
+  cancel-in-progress: true
 
 jobs:
   register-dataset:
@@ -18,13 +19,13 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
-      - name: Register dataset in Hugging Face
+      - name: Register raw dataset in HF
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
         run: python project/src/register_data.py
 
-  preprocess-data:
+  preprocess:
     needs: register-dataset
     runs-on: ubuntu-latest
     steps:
@@ -34,14 +35,14 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
-      - name: Run preprocessing and upload train/test
+      - name: Preprocess and upload train/test splits
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
         run: python project/src/preprocess.py
 
-  train-evaluate-register:
-    needs: preprocess-data
+  train-evaluate-register-model:
+    needs: preprocess
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,26 +51,26 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
-      - name: Train, evaluate, and register model
+      - name: Train, tune, evaluate, register model
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
           HF_MODEL_REPO: ${{ secrets.HF_MODEL_REPO }}
-        run: python project/src/train.py
-      - name: Print evaluation summary
-        run: python project/src/evaluate.py
+        run: |
+          python project/src/train.py
+          python project/src/evaluate.py
 
   deploy-space:
-    needs: train-evaluate-register
+    needs: train-evaluate-register-model
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - name: Install deployment dependencies
-        run: pip install huggingface_hub==0.27.1
-      - name: Push app files to Hugging Face Space
+      - name: Install dependencies
+        run: pip install -r project/requirements-ci.txt
+      - name: Push deployment files to HF Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_REPO: ${{ secrets.HF_SPACE_REPO }}

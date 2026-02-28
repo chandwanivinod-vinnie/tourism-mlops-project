@@ -20,5 +20,6 @@
     "MonthlyIncome",
     "FamilySize",
     "IncomePerTrip"
-  ]
+  ],
+  "selected_model": "RandomForest"
 }

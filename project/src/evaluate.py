@@ -9,6 +9,6 @@ if not metrics_path.exists():
 with open(metrics_path, 'r', encoding='utf-8') as f:
     payload = json.load(f)
 
-print('Best Params:', payload.get('best_params', {}))
-print('Metrics:', payload.get('metrics', {}))
+print('Selected Model:', payload.get('selected_model'))
+print('Model Results:', payload.get('all_model_results', {}))
 
