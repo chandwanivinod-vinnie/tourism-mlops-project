@@ -5,8 +5,11 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
-  train-and-register:
+  register-dataset:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,22 +18,60 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: pip install -r project/requirements-ci.txt
-      - name: Register dataset
+      - name: Register dataset in Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
         run: python project/src/register_data.py
-      - name: Preprocess dataset
+
+  preprocess-data:
+    needs: register-dataset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -r project/requirements-ci.txt
+      - name: Run preprocessing and upload train/test
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
         run: python project/src/preprocess.py
-      - name: Train and register model
+
+  train-evaluate-register:
+    needs: preprocess-data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -r project/requirements-ci.txt
+      - name: Train, evaluate, and register model
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_DATASET_REPO: ${{ secrets.HF_DATASET_REPO }}
           HF_MODEL_REPO: ${{ secrets.HF_MODEL_REPO }}
         run: python project/src/train.py
-      - name: Evaluate model
+      - name: Print evaluation summary
         run: python project/src/evaluate.py
+
+  deploy-space:
+    needs: train-evaluate-register
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install deployment dependencies
+        run: pip install huggingface_hub==0.27.1
+      - name: Push app files to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_REPO: ${{ secrets.HF_SPACE_REPO }}
+        run: python project/deployment/push_to_hf_space.py
 
