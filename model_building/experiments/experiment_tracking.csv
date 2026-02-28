@@ -1,6 +1,0 @@
-model,best_cv_f1,test_accuracy,test_precision,test_recall,test_f1,test_roc_auc,best_params
-GradientBoosting,0.13333333333333333,0.9333333333333333,0.75,1.0,0.8571428571428571,0.9722222222222222,"{""model__subsample"": 0.7, ""model__n_estimators"": 300, ""model__max_depth"": 2, ""model__learning_rate"": 0.05}"
-AdaBoost,0.36,0.8666666666666667,0.6666666666666666,0.6666666666666666,0.6666666666666666,0.9166666666666666,"{""model__n_estimators"": 200, ""model__learning_rate"": 1.0}"
-DecisionTree,0.2333333333333333,0.8,0.5,0.6666666666666666,0.5714285714285714,0.7222222222222222,"{""model__min_samples_split"": 5, ""model__min_samples_leaf"": 1, ""model__max_depth"": 12}"
-Bagging,0.0,0.8666666666666667,1.0,0.3333333333333333,0.5,0.9444444444444444,"{""model__n_estimators"": 200, ""model__max_samples"": 1.0, ""model__max_features"": 0.5}"
-RandomForest,0.0,0.8,0.0,0.0,0.0,0.9444444444444444,"{""model__n_estimators"": 300, ""model__min_samples_split"": 5, ""model__min_samples_leaf"": 4, ""model__max_depth"": 20}"
